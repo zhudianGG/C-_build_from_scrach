@@ -22,7 +22,7 @@ void selectionSort(vector<int> &a)
     int len = a.size();
     for (int i = 0, minIndex; i < len - 1; i++)
     {
-        minindex = i; // min index
+        minIndex = i; // min index
         for (int j = i + 1; j < len; j++)
         {
             if (a[j] < a[minIndex])
@@ -35,7 +35,7 @@ void selectionSort(vector<int> &a)
 void insertionSort(vector<int> &a)
 {
     int len = a.size();
-    for (int i = 0; j, temp; i < len - 1; i++) //loop number
+    for (int i = 0, j, temp; i < len - 1; i++) //loop number
     {
         j = i;
         temp = a[i + 1];
@@ -70,9 +70,35 @@ void shellSort(vector<int> &a)
     }
 }
 
+int partition(vector<int> &a, int left, int right)
+{
+    int pivot = a[right];
+    int i = left - 1;
+    for (int j = left, j < right; j++)
+    {
+        if (a[j] <= pivot)
+        {
+            i++;
+            swap(a[i], a[j]);
+        }
+    }
+    swap(a[i + 1], a[right]);
+    return i + 1;
+}
+
 void quickSort(vector<int> &a)
 {
+    if (left < right)
+    {
+        int mid = partition(a, left, right);
+        quickSort(a, left, mid - 1);
+        quickSort(a, mid + 1, right);
+    }
+}
 
+void qSort(vector<int> &a)
+{
+    quickSort(a, 0, a.size() - 1);
 }
 
 void printVector(const vector<int> &a)
