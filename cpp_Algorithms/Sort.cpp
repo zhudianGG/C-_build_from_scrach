@@ -101,6 +101,156 @@ void qSort(vector<int> &a)
     quickSort(a, 0, a.size() - 1);
 }
 
+void mergeSort(vector<int> &a, vector<int> &T, int left, int right)
+{
+    if (right - left == 1)
+        return;
+    int mid = left + right >> 1, tmid = left + right >> 1, tleft = left, i = left;
+    mergeSort(a, T, left, mid), mergeSort(a, T, mid, right);
+    while (tleft < mid || tmid < right)
+        {
+            if (tmid >= right || (tleft < mid && a[tleft] <= a[tmid]))
+            {
+                T[i++] = a[tleft++];
+            }
+            else
+            {
+                T[i++] = a[tmid++];
+            }
+        }
+        for (int i = left; i < right; i++)
+            a[i] = T[i];
+}
+
+void mSort(vector<int> &a)
+{
+    int len = a.size();
+    vector<int> T(len);
+    mergeSort(a, T, 0, len);
+}
+
+void adjustHeap(vector<int> &a, int i, int len)
+{
+    int maxIndex = i;
+    // compare
+    if (i * 2 + 1 < len && a[i * 2 + 1] > a[maxIndex])
+        maxIndex = i * 2 + 1;
+    if (i * 2 + 2 < len && a[i * 2 + 2] > a[maxIndex])
+        maxIndex = i * 2 + 2;
+    if (maxIndex != i)
+    {
+        swap(a[maxIndex], a[i]);
+        adjustHeap(a, maxIndex, len);
+    }
+}
+
+void heapSort(vector<int> &a)
+{
+    int len = a.size();
+    // build max Heap
+    for (int i = len / 2 - 1; i >= 0; i--)
+    {
+        adjustHeap(a, i, len);
+    }
+
+    // swap the node, adjust the heap
+    for (int i = len - 1; i > 0; i--)
+        {
+            swap[a[0], a[i]);
+            adjustHeap(a, 0, i);
+        }
+}
+
+void CountingSort(vector<int> &a)
+{
+    int len = a.size();
+    if (len == 0)
+        return;
+    int Min = a[0], Max = a[0];
+    for (int i = 1; i < len; i++)
+    {
+        Max = max(Max, a[i]);
+        Min = min(Min, a[i]);
+    }
+    int bias = 0 - Min;
+    vector<int> bucket (Max - Min + 1, 0);
+    for (int i = 0; i < len; i++)
+    {
+        bucket[a[i] + bias]++;
+    }
+    int index = 0, i = 0;
+    while (index < len)
+    {
+        if (bucket[i])
+        {
+            a[index] = i - bias;
+            bucket[i]--;
+            index++;
+        }
+        else
+            i++;
+    }
+}
+
+void bucketSort(vector<int> &a, int bucketSize)
+{
+    int len = a.size();
+    if (len < 2)
+        return;
+    int Min = a[0], Max = a[0];
+    for (int i = 1; i < len; i++)
+    {
+        Max = max(Max, a[i]);
+        Min = min(Min, a[i]);
+    }
+    int bucketCount = (Max - Min) / bucketSize + 1;
+    vector<int> bucketArr[bucketCount];
+    for (int i = 0; i < len; i++)
+    {
+        bucketArr[ (a[i] - Min) / bucketSize].push_back(a[i]);
+    }
+    a.clear();
+    for (int i = 0; i < bucketCount; i++)
+    {
+        int tlen = bucketArr[i].size();
+        sort(bucketArr[i].begin(), bucketArr[i].end());
+        for (int j = 0; j < tlen; j++)
+            a.push_back(bucketArr[i][j]);
+    }
+}
+
+void radixSort(vector<int> &a)
+{
+    int len = a.size();
+    if (len < 2)
+        return;
+    int Max = a[0];
+    for (int i = 1; i < len; i++)
+    {
+        Max = max(Max, a[i]);
+    }
+    int maxDigit = log10(Max) + 1;
+    // use log10 to get digit for avoiding loop
+    int mod = 10, div = 1;
+    vector<int> bucketList[10];
+    for (int i = 0; i < maxDigit; i++, mod *= 10, div *= 10)
+    {
+        for (int j = 0; j < len; j++)
+        {
+            int num = (a[j] % mod) / div;
+            bucketList[num].push_back(a[j]);
+        }
+        int index = 0;
+        for (int j = 0; j < 10; j++)
+        {
+            int tlen = bucketList[j].size();
+            for (int k = 0; k < tlen; k++)
+                a[index++] = bucketList[j][k];
+            bucketList[j].clear();
+        }
+    }
+}
+
 void printVector(const vector<int> &a)
 {
     for (int i = 0; i < a.size(); i++)
